@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+.sphere {
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, #7f8ea2);
+  box-shadow: inset -5px -5px 15px rgba(0,0,0,0.2),
+              5px 5px 15px rgba(0,0,0,0.3);
+  /* animation: move 2s infinite alternate ease-in-out; */
+}
+
+@keyframes move {
+  0% { transform: translateY(0) rotateY(0deg); }
+  100% { transform: translateY(-20px) rotateY(180deg); }
+}

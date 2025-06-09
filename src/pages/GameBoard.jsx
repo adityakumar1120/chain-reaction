@@ -28,11 +28,11 @@ export default function GameBoard() {
   // console.log('no of players' , noOfPlayers);
   // setNoOFPlayers(5);
   const playerColor = {
-    1: "#FF6B6B", // Soft Red
-    2: "#6BCB77", // Fresh Green
-    3: "#4D96FF", // Calm Blue
+    1: "#fd2e2e", // Soft Red
+    2: "#24f940", // Fresh Green
+    3: "#247ffd", // Calm Blue
     4: "#FFD93D", // Warm Yellow
-    5: "#A0AEC0", // Cool Gray
+    5: "#7f8ea2", // Cool Gray
     6: "#FF8C42", // Soft Orange
     7: "#38BDF8", // Aqua Cyan
     8: "#B794F4", // Gentle Violet
@@ -353,6 +353,35 @@ export default function GameBoard() {
       return "middle";
     }
   }
+  let winningObj  = {
+    1 : [],
+  }
+  const checkWin = ()=>{
+
+    [...Array(noOfPlayers)].map((_ , playerIdx)=>{
+      board.filter((row , i)=>{
+        return row.filter((col , i)=>{
+          console.log(col.player === null);
+           if(col.player === playerIdx + 1 || col.player === null ){
+            winningObj[playerIdx+1] = [...(winningObj[playerIdx+1] || []), true]
+          }else{
+             winningObj[playerIdx+1] = [...(winningObj[playerIdx+1] || []), false]
+
+           }
+          return col.player === playerIdx + 1 || col.player === null
+        })
+      })
+    })
+    Object.keys(winningObj).forEach((player)=>{
+      //need to continue
+      winningObj[player]
+      console.log(winningObj[player]);
+    })
+    return winningObj
+  }
+  useEffect(()=>{
+    console.log(checkWin());
+  } , [board])
 
   const handleClick = (e) => {
     // console.log(e.target.dataset.position);
@@ -365,73 +394,37 @@ export default function GameBoard() {
   };
   return (
     <div>
-      <div className="grid grid-cols-6  max-w-[500px] h-screen mx-auto">
+      <div className="grid grid-cols-6 grid-rows-9  max-w-[500px] h-screen mx-auto">
         {board.map((row, rowIndex) => {
           return row.map((col, colIndex) => {
             return (
               <div
-                onClick={handleClick}
-                key={crypto.randomUUID()}
-                data-row={rowIndex}
-                data-col={colIndex}
-                data-position={`${setPosition(rowIndex, colIndex)}`}
-                className={`bg-slate-200 flex items-center justify-center cursor-pointer`}
-                style={{
-                  border: `1px solid ${border}`,
-                  color: `${playerColor[col.player]}`,
-                }}
+              onClick={handleClick}
+              key={crypto.randomUUID()}
+              data-row={rowIndex}
+              data-col={colIndex}
+              data-position={`${setPosition(rowIndex, colIndex)}`}
+              className={`bg-black flex items-center justify-center cursor-pointer `}
+              style={{
+                border: `1px solid ${border}50`, // 80 is ~50% opacity in hex
+                color: `${playerColor[col.player]}`,
+              }}
               >
-                {/* {col.count} */}
-                {col.count === 0 ? (
-                  ""
-                ) : col.count === 1 ? (
-                  <div className="pointer-events-none flex justify-center items center">
-                    <div
-                      style={{
-                        backgroundColor: `${playerColor[col.player]}`,
-                      }}
-                      className="w-[12px] h-[12px] rounded-full pointer-events-none"
-                    ></div>
-                  </div>
-                ) : col.count === 2 ? (
-                  <div className="pointer-events-none flex justify-center items center">
-                    <div
-                      style={{
-                        backgroundColor: `${playerColor[col.player]}`,
-                      }}
-                      className="w-[12px] h-[12px] rounded-full pointer-events-none"
-                    ></div>
-                    <div
-                      style={{
-                        backgroundColor: `${playerColor[col.player]}`,
-                      }}
-                      className="w-[12px] h-[12px] rounded-full pointer-events-none"
-                    ></div>
-                  </div>
-                ) : col.count === 3 ? (
-                  <div className="pointer-events-none flex justify-center items center">
-                    <div
-                      style={{
-                        backgroundColor: `${playerColor[col.player]}`,
-                      }}
-                      className="w-[12px] h-[12px] rounded-full pointer-events-none"
-                    ></div>
-                    <div
-                      style={{
-                        backgroundColor: `${playerColor[col.player]}`,
-                      }}
-                      className="w-[12px] h-[12px] rounded-full pointer-events-none"
-                    ></div>
-                    <div
-                      style={{
-                        backgroundColor: `${playerColor[col.player]}`,
-                      }}
-                      className="w-[12px] h-[12px] rounded-full pointer-events-none"
-                    ></div>
-                  </div>
-                ) : (
-                  "4"
-                )}
+              {/* {col.count} */}
+              {col.count === 0 ? (
+                ""
+              ) : <div className="pointer-events-none flex justify-center items center">
+                {[...Array(col.count)].map((_, i) =>{
+                  return <div
+                  key={i}
+                  style={{
+                    backgroundColor: `${playerColor[col.player]}`,
+                  }}
+                  className="
+      shadow-[inset_-5px_-5px_15px_rgba(0,0,0,0.2),5px_5px_15px_rgba(0,0,0,0.3)] w-[16px] h-[16px] border rounded-full pointer-events-none"
+                  ></div>
+                })}
+                </div>}
               </div>
             );
           });
