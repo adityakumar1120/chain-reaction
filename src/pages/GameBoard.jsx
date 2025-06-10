@@ -207,9 +207,14 @@ export default function GameBoard() {
         })
     ))
   }
+  
   return (
-    <div>
-      <div className="grid grid-cols-6 grid-rows-9  max-w-[500px] h-screen mx-auto">
+    <div className="h-full">
+      <div className="grid grid-cols-6 grid-rows-9  max-w-[500px]  mx-auto" 
+      style={{
+        height : `${JSON.stringify(window.innerHeight)}px`
+      }}
+      >
         {board.map((row, rowIndex) => {
           return row.map((col, colIndex) => {
             return (

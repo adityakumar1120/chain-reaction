@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+html , body{
+  height: 100%;
+}
 .sphere {
   border-radius: 50%;
   background: radial-gradient(circle at 30% 30%, #fff, #7f8ea2);
