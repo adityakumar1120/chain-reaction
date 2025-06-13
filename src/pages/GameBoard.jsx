@@ -117,14 +117,14 @@ removePlayer()
   useEffect(()=>{
     // console.log(currenPlayingMembers);
     console.log(currentPlayer , 'current');
-    if(cordinates.x && cordinates.y){
+    if(cordinates.x !== null && cordinates.y !== null){
       if (winner === null && board[cordinates.x][cordinates.y].player === null || board[cordinates.x][cordinates.y].player === currentPlayer) {
                   console.log(playingPlayers , 'playing players');
       console.log(currentPlayerIdx , playingPlayers.length - 1 , 'palieuhh');
                   changePlayer();
       }
     }
-    if(cordinates.x && cordinates.y && moveCounts > 1){
+    if(cordinates.x !== null && cordinates.y !== null && moveCounts > 1){
       setWinner(checkWin()) 
     }
   } , [board])
