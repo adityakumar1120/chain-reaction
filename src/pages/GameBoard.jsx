@@ -38,24 +38,69 @@ export default function GameBoard() {
     )
   );
   const [currentPlayer, setCurrentPlayer] = useState(1);
+  const [currentPlayerIdx, setCurrentPlayerIdx] = useState(0);
+
+  const [playingPlayers , setPlayingPlayers] = useState(new Array(noOfPlayers).fill(0).map((_,i) => i+1))
+  // console.log(playingPlayers);
   const [moveCounts, setMoveCounts] = useState(0)
   const [winner, setWinner] = useState(null)
   const [border, setBorder] = useState(playerColor[1]);
   const [cordinates, setCordinates] = useState({ x: null, y: null });
   const changePlayer = () => {
     setCurrentPlayer((prev) => {
-      if (prev === noOfPlayers) {
-        return 1;
+      if (prev !== playingPlayers[0] && prev === noOfPlayers || currentPlayerIdx >= playingPlayers.length - 1) {
+          setCurrentPlayerIdx(0)
+          return playingPlayers[0];
       } //last player than reset to first (1)
-      else return prev + 1;
+      else {
+        setCurrentPlayerIdx(prev => prev + 1)
+        return playingPlayers[currentPlayerIdx + 1];
+      }
     });
   };
+  const removePlayer = ()=>{
+  let isPlaying = {}
+    const checking = [...Array(noOfPlayers)].map((_ , playerIdx)=>{
+      return board.filter((row , i)=>{
+        return row.filter((col , i)=>{
+          // console.log(col.player === null);
+           if(moveCounts > noOfPlayers){
+            if(col.player === playerIdx + 1 ){
+            isPlaying[playerIdx+1] = [...(isPlaying[playerIdx+1] || []), true]
+          }else{
+             isPlaying[playerIdx+1] = [...(isPlaying[playerIdx+1] || []), false]
+           }
+           }
+          return col.player === playerIdx + 1
+        })
+      })
+    })
+
+    let currenPlayingMembers = []
+    Object.keys(isPlaying).map((player)=>{
+      currenPlayingMembers.push(isPlaying[player].some((e ,i)=>{
+        return e === true
+      }) ? player : null
+    )
+    })
+    if(moveCounts > playingPlayers.length){
+   
+      console.log(isPlaying , 'obj');
+     console.log(currenPlayingMembers);
+     console.log(currentPlayer , 'currrent');
+      setPlayingPlayers(currenPlayingMembers.filter(e => e!== null).map(e => JSON.parse(e)))
+    }
+  }
+// console.log(playingPlayers);
+
   const checkExplosion = (x, y, col , explosionNumber) => {
     const explode = (explodeNum , position)=>{
       if (board[x][y].count === explodeNum) {
         explosion(x, y, position , board , currentPlayer , checkExplosion , explosionNumber
-  , grid
+  , grid 
 )
+console.log('check');
+removePlayer()
    return { ...col, count: 0, player: null };
       }
     }
@@ -69,7 +114,20 @@ export default function GameBoard() {
       return explode(explosionNumber.middle , 'middle') 
     }
   };
-
+  useEffect(()=>{
+    // console.log(currenPlayingMembers);
+    console.log(currentPlayer , 'current');
+    if(cordinates.x && cordinates.y){
+      if (winner === null && board[cordinates.x][cordinates.y].player === null || board[cordinates.x][cordinates.y].player === currentPlayer) {
+                  console.log(playingPlayers , 'playing players');
+      console.log(currentPlayerIdx , playingPlayers.length - 1 , 'palieuhh');
+                  changePlayer();
+      }
+    }
+    if(cordinates.x && cordinates.y && moveCounts > 1){
+      setWinner(checkWin()) 
+    }
+  } , [board])
   const updateBoard = (x, y) => {
     setBoard((prev) => {
       return prev.map((row, rowIndex) => {
@@ -80,8 +138,8 @@ export default function GameBoard() {
               if (winner === null && col.player === null || col.player === currentPlayer) {
                 // changin to next player if the move is correct
                 setMoveCounts(moveCounts + 1)
-                changePlayer();
                 const isExplosion = checkExplosion(x, y, col ,{corner : 1, edge : 2, middle: 3});
+
                 if (isExplosion) {
                   return isExplosion;
                 }
@@ -152,6 +210,7 @@ export default function GameBoard() {
   }
   let winningObj  = {
   }
+  
   const checkWin = ()=>{
     let winner ;
     [...Array(noOfPlayers)].map((_ , playerIdx)=>{
@@ -162,12 +221,14 @@ export default function GameBoard() {
             winningObj[playerIdx+1] = [...(winningObj[playerIdx+1] || []), true]
           }else{
              winningObj[playerIdx+1] = [...(winningObj[playerIdx+1] || []), false]
-
            }
-          return col.player === playerIdx + 1 || col.player === null
+          return true
         })
       })
     })
+    console.log();
+   
+
     Object.keys(winningObj).some((player)=>{
       return winner = winningObj[player].every((e)=>{
        return e === true
@@ -175,11 +236,7 @@ export default function GameBoard() {
     })
     return winner
   }
-  useEffect(()=>{
-    if(cordinates.x && cordinates.y && moveCounts > 1){
-      setWinner(checkWin())
-    }
-  } , [board])
+  
 
   const handleClick = (e) => {
     setCordinates({
@@ -193,6 +250,8 @@ export default function GameBoard() {
       setMoveCounts(0)
       setCurrentPlayer(1)
       setBorder(playerColor[1])
+      setCurrentPlayerIdx(0)
+      setPlayingPlayers(new Array(noOfPlayers).fill(0).map((_,i) => i+1))
       setBoard(new Array(grid.rows).fill(null).map((row, rowIndex) =>
       new Array(grid.columns)
         .fill(0)
@@ -210,7 +269,7 @@ export default function GameBoard() {
   
   return (
     <div className="h-full">
-      <div className="grid grid-cols-6 grid-rows-9  max-w-[500px]  mx-auto" 
+      <div className="grid grid-cols-6 grid-rows-9  w-full  mx-auto" 
       style={{
         height : `${JSON.stringify(window.innerHeight)}px`
       }}
@@ -219,6 +278,7 @@ export default function GameBoard() {
           return row.map((col, colIndex) => {
             return (
               <Cell
+              key={crypto.randomUUID()}
               handleClick={handleClick}
               rowIndex={rowIndex}
               colIndex={colIndex}

@@ -1,5 +1,5 @@
 export const explosion = (x, y, position , board , currentPlayer , checkExplosion , explosionNumber
-  , grid
+  , grid 
 ) => {
   if (navigator.vibrate) {
     navigator.vibrate(100);
