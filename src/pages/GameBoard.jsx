@@ -64,7 +64,9 @@ export default function GameBoard() {
       return board.filter((row , i)=>{
         return row.filter((col , i)=>{
           // console.log(col.player === null);
-           if(moveCounts > noOfPlayers){
+          console.log(moveCounts , noOfPlayers , 'greater');
+           if(moveCounts >= playingPlayers.length){
+            console.log('greater');
             if(col.player === playerIdx + 1 ){
             isPlaying[playerIdx+1] = [...(isPlaying[playerIdx+1] || []), true]
           }else{
@@ -83,7 +85,8 @@ export default function GameBoard() {
       }) ? player : null
     )
     })
-    if(moveCounts > playingPlayers.length){
+    console.log(isPlaying , 'count');
+    if(moveCounts >= playingPlayers.length){
    
       console.log(isPlaying , 'obj');
      console.log(currenPlayingMembers);
@@ -94,12 +97,12 @@ export default function GameBoard() {
 // console.log(playingPlayers);
 
   const checkExplosion = (x, y, col , explosionNumber) => {
+
     const explode = (explodeNum , position)=>{
       if (board[x][y].count === explodeNum) {
         explosion(x, y, position , board , currentPlayer , checkExplosion , explosionNumber
   , grid 
 )
-console.log('check');
 removePlayer()
    return { ...col, count: 0, player: null };
       }
