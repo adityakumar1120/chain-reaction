@@ -15,6 +15,7 @@ export const explosion = (x, y, position , board , currentPlayer , checkExplosio
   };
 
   fakeBoard[x][y].count = 0;
+  fakeBoard[x][y].player = null;
 
   if (position === "corner") {
     if (x > 0 && y > 0) {
