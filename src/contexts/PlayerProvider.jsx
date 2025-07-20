@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 const PlayerContext = createContext()
 export  const PlayerProvider = ({children}) =>{
-    const [noOfPlayers , setNoOFPlayers] = useState(2)
+    const [noOfPlayers , setNoOFPlayers] = useState(4)
     return <PlayerContext.Provider value={{noOfPlayers , setNoOFPlayers}}>
         {children}
     </PlayerContext.Provider>

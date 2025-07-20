@@ -4,6 +4,7 @@ import sound from '../assets/sounds/click.wav'
 import Winner from "../components/Winner";
 import Cell from "../components/Cell";
 import { explosion } from "../functions/Explosion";
+import GameBoardNav from "../components/gameBoardNav";
 export default function GameBoard() {
   const { noOfPlayers, setNoOFPlayers } = usePlayer();
   let audio = new Audio()
@@ -46,12 +47,34 @@ export default function GameBoard() {
   const [winner, setWinner] = useState(null)
   const [border, setBorder] = useState(playerColor[1]);
   const [cordinates, setCordinates] = useState({ x: null, y: null });
+
+  //undo redo states 
+  const [history , setHistory] = useState(()=>{
+        const  localVal = JSON.parse(localStorage.getItem('history'))
+        if (localVal){
+          return localVal
+        }
+        return []
+      })
+      const [historyIndex , setHistoryIndex] = useState(()=>{
+        if(history.length){
+          return history.length
+        } 
+        return 0
+      })
+  const [isUndoingOrRedoing , setIsUndoingOrRedoing] = useState(false)
+const [isUndoing , setIsUndoing] = useState(false)
   const changePlayer = () => {
     setCurrentPlayer((prev) => {
       if (prev !== playingPlayers[0] && prev === noOfPlayers || currentPlayerIdx >= playingPlayers.length - 1) {
           setCurrentPlayerIdx(0)
           return playingPlayers[0];
       } //last player than reset to first (1)
+      else if(isUndoing === true){
+        setCurrentPlayerIdx(prev => prev - 1)
+        console.log();
+        return playingPlayers[currentPlayerIdx - 1];
+      }
       else {
         setCurrentPlayerIdx(prev => prev + 1)
         return playingPlayers[currentPlayerIdx + 1];
@@ -64,9 +87,9 @@ export default function GameBoard() {
       return board.filter((row , i)=>{
         return row.filter((col , i)=>{
           // console.log(col.player === null);
-          console.log(moveCounts , noOfPlayers , 'greater');
+          // console.log(moveCounts , noOfPlayers , 'greater');
            if(moveCounts >= playingPlayers.length){
-            console.log('greater');
+            // console.log('greater');
             if(col.player === playerIdx + 1 ){
             isPlaying[playerIdx+1] = [...(isPlaying[playerIdx+1] || []), true]
           }else{
@@ -85,16 +108,15 @@ export default function GameBoard() {
       }) ? player : null
     )
     })
-    console.log(isPlaying , 'count');
+    // console.log(isPlaying , 'count');
     if(moveCounts >= playingPlayers.length){
    
-      console.log(isPlaying , 'obj');
-     console.log(currenPlayingMembers);
-     console.log(currentPlayer , 'currrent');
+      // console.log(isPlaying , 'obj');
+    //  console.log(currenPlayingMembers);
+    //  console.log(currentPlayer , 'currrent');
       setPlayingPlayers(currenPlayingMembers.filter(e => e!== null).map(e => JSON.parse(e)))
     }
   }
-// console.log(playingPlayers);
 
   const checkExplosion = (x, y, col , explosionNumber) => {
 
@@ -117,20 +139,36 @@ removePlayer()
       return explode(explosionNumber.middle , 'middle') 
     }
   };
+  // console.log(history);
+  let hisArr = []
   useEffect(()=>{
     // console.log(currenPlayingMembers);
-    console.log(currentPlayer , 'current');
+    // console.log(currentPlayer , 'current');
     if(cordinates.x !== null && cordinates.y !== null){
-      if (winner === null && board[cordinates.x][cordinates.y].player === null || board[cordinates.x][cordinates.y].player === currentPlayer) {
-                  console.log(playingPlayers , 'playing players');
-      console.log(currentPlayerIdx , playingPlayers.length - 1 , 'palieuhh');
-                  changePlayer();
+      if (winner === null && isUndoingOrRedoing === false && board[cordinates.x][cordinates.y].player === null || board[cordinates.x][cordinates.y].player === currentPlayer) {
+                  // console.log(playingPlayers , 'playing players');
+      // console.log(currentPlayerIdx , playingPlayers.length - 1 , 'palieuhh');
+                  changePlayer(); //chnaging players
       }
     }
-    if(cordinates.x !== null && cordinates.y !== null && moveCounts > 1){
+    
+    if(cordinates.x !== null && cordinates.y !== null && moveCounts > 1 && isUndoingOrRedoing === false){
       setWinner(checkWin()) 
     }
+    if(cordinates.x !== null && cordinates.y !== null && isUndoingOrRedoing === false){
+      // console.log(prev);
+      // hisArr = [...hisArr , board]
+      // console.log(hisArr);
+      setHistory(prev => {
+        return [...prev , board]
+      })
+    }
+    
   } , [board])
+  useEffect(()=>{
+    console.log(history);
+    console.log(hisArr);
+  }, [history])
   const updateBoard = (x, y) => {
     setBoard((prev) => {
       return prev.map((row, rowIndex) => {
@@ -139,7 +177,12 @@ removePlayer()
             if (colIndex === y) {
               //check if the cell is empty or is should be same as the player turn
               if (winner === null && col.player === null || col.player === currentPlayer) {
-                // changin to next player if the move is correct
+                // changing to next player if the move is correct
+                setIsUndoingOrRedoing(false)
+                setIsUndoing(false)
+                if(history.length){
+                                setHistoryIndex(history.length)  //setting the history index when i new move is made
+                              }
                 setMoveCounts(moveCounts + 1)
                 const isExplosion = checkExplosion(x, y, col ,{corner : 1, edge : 2, middle: 3});
 
@@ -247,7 +290,53 @@ removePlayer()
       y: JSON.parse(e.target.dataset.col),
     });
   };
+  // console.log(history);
+  useEffect(()=>{
+    if(cordinates.x !== null && cordinates.y !== null && history.length && isUndoingOrRedoing ){
+      setBoard(history[historyIndex])
+      console.log('object');
+    }
+  }, [historyIndex])
+  // console.log(historyIndex);
+      const handleUndo = ()=>{
+       if(winner === null){
+        if(historyIndex > 0 && historyIndex === history.length -1){
+            setHistoryIndex(prev => {
+              console.log(prev);
+              return prev-1
+            })
+            setIsUndoingOrRedoing(true)
+            setCurrentPlayer(prev =>{
+              return currentPlayerIdx === 0 ? playingPlayers[playingPlayers.length-1] : playingPlayers[currentPlayerIdx - 1]
+            })
+            setCurrentPlayerIdx(prev => prev -1)
+            
+            setIsUndoing(true)
+       }
+          // setGameBoard(history[historyIndex]) this will cause step back render issue
+        }
+        
+      }
+      const handleRedo = ()=>{
+    // console.log('object');
+       if(winner === null){
+        if(history.length-1 > historyIndex ){
+          setHistoryIndex(prev => {
+            // console.log(prev);
+            return prev+1
+          })
+            setIsUndoingOrRedoing(true)
+            
+            setCurrentPlayer(playingPlayers[currentPlayerIdx + 1])
+            setCurrentPlayerIdx(prev => prev  + 1)
+          // setGameBoard(history[historyIndex]) this will cause step back render issue
+        }
+       }
+        
+      }
   const playAgain = ()=>{
+    setIsUndoingOrRedoing(false)
+    setHistory([])
       setWinner(null)
       setCordinates({ x: null, y: null })
       setMoveCounts(0)
@@ -272,6 +361,7 @@ removePlayer()
   
   return (
     <div className="h-full">
+      <GameBoardNav handleRedo={handleRedo} handleUndo={handleUndo}/>
       <div className="grid grid-cols-6 grid-rows-9  w-full  mx-auto" 
       style={{
         height : `${JSON.stringify(window.innerHeight)}px`
