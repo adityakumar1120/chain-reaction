@@ -4,7 +4,7 @@ import sound from '../assets/sounds/click.wav'
 import Winner from "../components/Winner";
 import Cell from "../components/Cell";
 import { explosion } from "../functions/Explosion";
-import GameBoardNav from "../components/gameBoardNav.jsx";
+import GameBoardNav from "../components/GameBoardNav";
 import { useLocation } from "react-router";
 export default function GameBoard() {
     const { history, setHistory } = usePlayer();
