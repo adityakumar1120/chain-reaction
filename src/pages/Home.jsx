@@ -24,8 +24,10 @@ export default function Home() {
             </select>
         </div>
             <button className='bg-gray-300 py-1.5 px-4 font-semibold rounded w-fit my-4 cursor-pointer hover:bg-gray-400' onClick={e => navigate('/gameboard')}>Play</button>
-            <p className='max-w-[38rem]'>The objective of Chain Reaction is to take control of the board by eliminating your opponents orbs.</p>
+            <p className='max-w-[38rem] px-4'>The objective of Chain Reaction is to take control of the board by eliminating your opponents orbs.</p>
             
+            <button className='bg-gray-300 py-1.5 px-4 font-semibold rounded w-fit my-4 cursor-pointer hover:bg-gray-400' onClick={e => navigate('/savedgames')}>Saved Games</button>
+    
     </div>
   )
 }

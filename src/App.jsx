@@ -3,6 +3,7 @@ import './App.css'
 import Home from './pages/Home'
 import GameBoard from './pages/GameBoard'
 import {PlayerProvider} from './contexts/PlayerProvider.jsx';
+import SavedGames from './pages/SavedGames.jsx';
 function App() {
 
   return (
@@ -11,6 +12,7 @@ function App() {
    <Routes>
     <Route path='/' element={<Home/>}></Route>
     <Route path='/gameboard' element={<GameBoard/>}></Route>
+    <Route path='/savedgames' element={<SavedGames/>}></Route>
    </Routes>
    </BrowserRouter>
    </PlayerProvider>
