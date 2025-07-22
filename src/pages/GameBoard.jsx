@@ -15,7 +15,6 @@ export default function GameBoard() {
     }
     return crypto.randomUUID()
   })
-  console.log(gameId);
   const { noOfPlayers, setNoOFPlayers } = usePlayer();
   let audio = new Audio()
   audio.src = sound
@@ -371,7 +370,6 @@ removePlayer()
     ))
   }
   useEffect(()=>{
-    console.log(winner);
     if(winner){
       setHistory(prev => {
         return prev.filter((elem)=>{
@@ -388,7 +386,7 @@ removePlayer()
       />
       <div className="grid grid-cols-6 grid-rows-9  w-full  mx-auto" 
       style={{
-        height : `${JSON.stringify(window.innerHeight - 45)}px`
+        height : `${JSON.stringify(window.innerHeight - 47)}px`
       }}
       >
         {board.map((row, rowIndex) => {

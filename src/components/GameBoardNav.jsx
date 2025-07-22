@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { GrRedo } from "react-icons/gr";
-import { IoMdAdd } from "react-icons/io";
+import { IoMdAdd, IoMdHome } from "react-icons/io";
 import { LuUndo2 } from "react-icons/lu";
 import { usePlayer } from "../contexts/PlayerProvider";
 import { useEffect } from "react";
 import { HiSignal } from "react-icons/hi2";
 import SavePopUp from "./SavePopUp";
+import { Link } from "react-router";
 
 export default function GameBoardNav({
   handleRedo,
@@ -67,12 +68,11 @@ export default function GameBoardNav({
     });
   };
 
-  useEffect(() => {
-    localStorage.setItem("history", JSON.stringify(history));
-  }, [history]);
+ 
   return (
     <nav className="bg-black border px-4 py-2 flex justify-between items-center">
       {/* <h1 className="text-green-500 font-bold text-xl tracking-wide">Chain Reaction</h1> */}
+      <Link to={'/'}>< IoMdHome className='text-white text-3xl hover:bg-[#484141]  rounded-full p-[2px] cursor-pointer transition '/> </Link>
       <button
         onClick={() => {
           setOpenPopUp(true)
@@ -84,20 +84,6 @@ export default function GameBoardNav({
       >
         <IoMdAdd />
       </button>
-      <div className="flex gap-6">
-        <button
-          className="text-[rgba(71,209,255,0.9)] hover:text-[rgba(90,159,183,0.9)] transition text-xl cursor-pointer active:scale-[0.8]"
-          onClick={handleUndo}
-        >
-          <LuUndo2 className="pointer-events-none" />
-        </button>
-        <button
-          className="text-[rgba(71,209,255,0.9)] hover:text-[rgba(90,159,183,0.9)] transition text-xl cursor-pointer active:scale-[0.8]"
-          onClick={handleRedo}
-        >
-          <GrRedo className="pointer-events-none" />
-        </button>
-      </div>
       {openPopUp && (
         <SavePopUp
           handleClick={handleClick}

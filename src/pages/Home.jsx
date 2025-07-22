@@ -10,7 +10,7 @@ export default function Home() {
         setNoOFPlayers(JSON.parse(e.target.value))
     }
   return (
-    <div className='flex flex-col items-center'>
+    <div className='flex flex-col items-center px-4'>
         <h1 className='text-2xl text-center pt-6 pb-7'>Chain Reaction</h1>
         <div>
             <select name="players" id="players" onChange={changeNoOfPlayers}>
@@ -26,7 +26,7 @@ export default function Home() {
             <button className='bg-gray-300 py-1.5 px-4 font-semibold rounded w-fit my-4 cursor-pointer hover:bg-gray-400' onClick={e => navigate('/gameboard')}>Play</button>
             <p className='max-w-[38rem] px-4'>The objective of Chain Reaction is to take control of the board by eliminating your opponents orbs.</p>
             
-            <button className='bg-gray-300 py-1.5 px-4 font-semibold rounded w-fit my-4 cursor-pointer hover:bg-gray-400' onClick={e => navigate('/savedgames')}>Saved Games</button>
+            <button className='bg-gray-300 py-1.5  font-semibold rounded max-w-[1440px] my-4 w-full cursor-pointer hover:bg-gray-400' onClick={e => navigate('/savedgames')}>Saved Games</button>
     
     </div>
   )
