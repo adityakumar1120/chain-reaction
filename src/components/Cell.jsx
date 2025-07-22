@@ -1,5 +1,4 @@
 import React from "react";
-import { div } from "three/tsl";
 
 export default function Cell({
   handleClick,
