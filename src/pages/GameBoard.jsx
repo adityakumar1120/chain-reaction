@@ -8,6 +8,7 @@ import GameBoardNav from "../components/GameBoardNav";
 import { useLocation } from "react-router";
 export default function GameBoard() {
     const { history, setHistory } = usePlayer();
+    const [dimension, setDimension] = useState({width : window.innerWidth , height: window.innerHeight})
   const previousGame = useLocation().state
   const [gameId, setGameId] = useState(()=>{
     if(previousGame){
@@ -41,7 +42,7 @@ export default function GameBoard() {
         .fill(0)
         .map((_, i) => i)
         .map((col, colIndex) => {
-          // console.log(setPosition(rowIndex , colIndex) , 'state');
+          //  , 'state');
           return {
             count: 0,
             player: null,
@@ -110,7 +111,7 @@ export default function GameBoard() {
       } 
       // else if(isUndoing === true){
       //   setCurrentPlayerIdx(prev => prev - 1)
-      //   console.log(playingPlayers[currentPlayerIdx - 1] , 'mein chala');
+      //   
       //   return playingPlayers[currentPlayerIdx - 1];
 
       // }
@@ -151,7 +152,7 @@ export default function GameBoard() {
       setPlayingPlayers(currenPlayingMembers.filter(e => e!== null).map(e => JSON.parse(e)))
     }
   }
-// console.log(playingPlayers);
+// 
 
   const checkExplosion = (x, y, col , explosionNumber) => {
 
@@ -175,7 +176,7 @@ removePlayer()
     }
   };
   useEffect(()=>{
-    // console.log(currenPlayingMembers);
+    // 
     if(cordinates.x !== null && cordinates.y !== null){
       if (winner === null && board[cordinates.x][cordinates.y].player === null || board[cordinates.x][cordinates.y].player === currentPlayer) {
                   changePlayer();
@@ -267,7 +268,7 @@ removePlayer()
     [...Array(noOfPlayers)].map((_ , playerIdx)=>{
       board.filter((row , i)=>{
         return row.filter((col , i)=>{
-          // console.log(col.player === null);
+          // 
            if(col.player === playerIdx + 1 || col.player === null ){
             winningObj[playerIdx+1] = [...(winningObj[playerIdx+1] || []), true]
           }else{
@@ -313,8 +314,8 @@ removePlayer()
   //   setHistoryIdx(history.length)
   // },[moveCounts])
   // useEffect(()=>{
-  //   console.log(history);
-  //   console.log(historyIdx);
+  //   
+  //   
   // },[history])
   // useEffect(()=>{
   //   if(cordinates.x !== null && cordinates.y !== null ){
@@ -338,7 +339,7 @@ removePlayer()
     // if(history.length-1 > historyIdx  ){
     //   setHistoryIdx(prev => prev + 1)
     //   setCurrentPlayer(prev =>{
-    //     console.log(currentPlayerIdx);
+    //     
     //           return currentPlayerIdx >= playingPlayers.length - 1 ? playingPlayers[0] : playingPlayers[currentPlayerIdx + 1]
     //         })
     //         setCurrentPlayerIdx(prev => prev >= playingPlayers.length ? 0 : prev + 1 )
@@ -360,7 +361,7 @@ removePlayer()
         .fill(0)
         .map((_, i) => i)
         .map((col, colIndex) => {
-          // console.log(setPosition(rowIndex , colIndex) , 'state');
+          //  , 'state');
           return {
             count: 0,
             player: null,
@@ -377,7 +378,12 @@ removePlayer()
         })
       })
     }
-  }, winner)
+  }, [winner])
+  useEffect(()=>{
+    window.addEventListener('resize', (e)=>{
+      setDimension(prev => ({width : window.innerWidth , height: window.innerHeight}))
+    })
+  },[])
   return (
     <div className="h-full">
       <GameBoardNav handleRedo={handleRedo} handleUndo={handleUndo} gameId={gameId}
@@ -386,7 +392,7 @@ removePlayer()
       />
       <div className="grid grid-cols-6 grid-rows-9  w-full  mx-auto" 
       style={{
-        height : `${JSON.stringify(window.innerHeight - 47)}px`
+        height : `${JSON.stringify(dimension.height - 47)}px`
       }}
       >
         {board.map((row, rowIndex) => {

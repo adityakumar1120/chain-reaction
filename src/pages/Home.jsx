@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { usePlayer } from '../contexts/PlayerProvider';
 import Winner from '../components/Winner';
+import { AiFillAndroid } from 'react-icons/ai';
 
 export default function Home() {
     const { noOfPlayers, setNoOFPlayers } = usePlayer();
@@ -27,6 +28,7 @@ export default function Home() {
             <p className='max-w-[38rem] px-4'>The objective of Chain Reaction is to take control of the board by eliminating your opponents orbs.</p>
             
             <button className='bg-gray-300 py-1.5  font-semibold rounded max-w-[1440px] my-4 w-full cursor-pointer hover:bg-gray-400' onClick={e => navigate('/savedgames')}>Saved Games</button>
+            <a href='../../public/app-debug.apk' download={'Aditya-chain-reaction.apk'} className='bg-green-500 flex items-center justify-center gap-3 py-1.5 text-center text-white font-semibold rounded max-w-[1440px] my-1 w-full cursor-pointer hover:bg-green-700'><span>Download App</span> <AiFillAndroid className='text-2xl'/></a>
     
     </div>
   )

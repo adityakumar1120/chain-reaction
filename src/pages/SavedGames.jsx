@@ -10,7 +10,7 @@ export default function SavedGames() {
   console.log(logo);
   const { history, setHistory } = usePlayer();
   const [editValue, setEditValue] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
+  const [IsEditingInput, setIsEditingInputInput] = useState(false)
   const inputRef = useRef(null)
   const handleDelete = (e , gameId)=>{
     e.preventDefault()
@@ -19,7 +19,7 @@ export default function SavedGames() {
   }
   const handleEdit = (e , gameId)=>{
     e.preventDefault()
-    setIsEditing(true)   
+    setIsEditingInputInput(gameId)   
     setEditValue(history.filter((e)=> e.gameId === gameId)[0].gameTitle)
   }
   const handleInputChange = (e)=>{
@@ -27,7 +27,8 @@ export default function SavedGames() {
     setEditValue(e.target.value)
   }
   const handleEditSave =(e , gameId)=>{
-    setIsEditing(false)
+    e.preventDefault()
+    setIsEditingInputInput(false)
     setHistory(prev => prev.map((e)=>{
       if(e.gameId === gameId && editValue !== ''){
         return {...e , gameTitle : editValue}
@@ -37,10 +38,10 @@ export default function SavedGames() {
     }))
   }
   useEffect(()=>{
-    if(isEditing){
+    if(IsEditingInput){
       inputRef.current.focus()
     }
-  }, [isEditing])
+  }, [IsEditingInput])
   return (
     <div className="max-w-[1400px] mx-auto">
       <div className="flex items-center p-2 px-4 text-2xl justify-between">
@@ -62,14 +63,14 @@ export default function SavedGames() {
               alt=""
             />
           </div>
-          {isEditing ? <div className="flex items-center justify-between gap-[4px]" onClick={e => e.preventDefault()}>
-            <input ref={inputRef} className="outline-0 border-2 border-[#2c252574] rounded px-2 py-[1px] w-[84%]" type="text" value={editValue} onChange={handleInputChange}/>
-            <FaCheck onClick={e => handleEditSave(e , elem.gameId)} className="hover:text-[#6418c7]"/>
+          {IsEditingInput === elem.gameId ? <div className="flex items-center justify-between gap-[4px]" onClick={e => e.preventDefault()}>
+            <input ref={inputRef} className="outline-0 border-b-2 border-[#2c252574] rounded px-2 py-[1px] w-[84%] text-lg" type="text" value={editValue} onChange={handleInputChange}/>
+            
           </div>:
           <h1 className="text-lg">{elem?.gameTitle}</h1>}
           </div>
-          <div className="flex flex-wrap items-center gap-1 text-[25px] ">
-            <MdEdit className="hover:text-[#6418c7]" onClick={e => handleEdit(e , elem.gameId)}/>
+          <div className="flex flex-wrap items-center gap-1.5 text-[25px] ">
+            {IsEditingInput === elem.gameId ?<FaCheck onClick={e => handleEditSave(e , elem.gameId)} className="hover:text-[#6418c7]"/> : <MdEdit className="hover:text-[#6418c7]" onClick={e => handleEdit(e , elem.gameId)}/>  }
             <MdDelete className="hover:text-[#6418c7]" onClick={e => handleDelete(e , elem.gameId)}/>
           </div>
       </NavLink>
